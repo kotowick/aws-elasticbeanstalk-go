@@ -7,12 +7,18 @@
 **Create Application**
 ```
 ./bin/ebd create application -a <app-name>
+
+Optional Args:
+
 -r <aws-region>
 ```
 
 **Create Environment**
 ```
 ./bin/ebd create environment -a <env_name> -e <env-name> -t <tier> -b <s3-bucket/s3-folder> -c <config-file> -l v1
+
+Optional Args:
+
 -r <aws-region>
 -p <aws-profile>
 ```
