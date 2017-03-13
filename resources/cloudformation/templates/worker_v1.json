@@ -1,0 +1,107 @@
+{
+	"Parameters" : {
+
+		"appName" : {
+			"Description" : "Name of Application.",
+			"Type" : "String"
+		},
+
+		"appBucket" : {
+			"Description" : "Bucket name where App Bundle is located.",
+			"Type" : "String"
+		},
+
+		"appKey" : {
+			"Description" : "Folder/Filename of App Bundle.",
+			"Type" : "String"
+		},
+
+		"envName" : {
+			"Description" : "Name of the Environment",
+			"Type" : "String"
+		},
+
+		"tier" : {
+			"Description" : "Environment Tier (webserver or worker)",
+			"Type" : "String",
+			"Default" : "Worker"
+		},
+
+		"vpc" : {
+			"Description" : "Name of existing VPC ID.",
+			"Type" : "String"
+		},
+
+		"privateSubnets" : {
+			"Description" : "Subnet Id(s) for application assignment.",
+			"Type" : "String"
+		},
+
+		"publicSubnets" : {
+			"Description" : "Subnet Id(s) for ELB assignment.",
+			"Type" : "String"
+		},
+
+		"elbCross" : {
+			"Description" : "Will ELB cross availability zones. True/False Boolean.",
+			"Type" : "String",
+			"Default" : "true",
+			"AllowedValues" : [ "true", "false" ]
+		},
+
+		"solutionStack" : {
+			"Description" : "Solution Stack used for build.",
+			"Type" : "String"
+		},
+
+		"keyName" : {
+      "Description" : "Name of an existing EC2 KeyPair to enable SSH access to the Elastic Beanstalk hosts",
+      "Type": "String"
+    },
+
+		"serviceRole" : {
+			"Description" : "IAM role used by Elastic Beanstalk to manage services.",
+			"Type" : "String"
+		},
+
+		"instanceRole" : {
+			"Description" : "IAM role used by Elastic Beanstalk to manage instances.",
+			"Type" : "String"
+		}
+	},
+
+	"Resources" : {
+		"ApplicationVersion" : {
+  			"Type" : "AWS::ElasticBeanstalk::ApplicationVersion",
+  			"Properties" : {
+    			"ApplicationName" : { "Ref" : "appName" },
+    			"SourceBundle" : {
+      				"S3Bucket" : { "Ref" : "appBucket" },
+      				"S3Key" : { "Ref" : "appKey" }
+    			}
+  			}
+		},
+
+		"Environment" : {
+   			"Type" : "AWS::ElasticBeanstalk::Environment",
+   			"Properties" : {
+      			"ApplicationName" : { "Ref" : "appName" },
+      			"EnvironmentName" :  { "Ref" : "envName" },
+      			"SolutionStackName" : { "Ref" : "solutionStack" },
+						"VersionLabel" : { "Ref" : "ApplicationVersion" },
+						"Tier": {
+							"Name" : "Worker",
+							"Type" : "SQS/HTTP"
+						},
+						"OptionSettings" : [
+							{"Namespace" : "aws:ec2:vpc", "OptionName" : "VPCId", "Value" : { "Ref" : "vpc" }},
+							{"Namespace" : "aws:autoscaling:asg", "OptionName" : "Availability Zones", "Value" : "Any 2" },
+           		{"Namespace" : "aws:ec2:vpc", "OptionName" : "Subnets", "Value" : { "Ref" : "privateSubnets" }},
+							{"Namespace" : "aws:elasticbeanstalk:environment", "OptionName" : "ServiceRole", "Value" : { "Ref" : "serviceRole" }},
+							{"Namespace" : "aws:autoscaling:launchconfiguration", "OptionName" : "EC2KeyName", "Value" : { "Ref" : "keyName" }},
+							{"Namespace" : "aws:autoscaling:launchconfiguration", "OptionName" : "IamInstanceProfile", "Value" : { "Ref" : "instanceRole" }}
+						]
+   			}
+		}
+	}
+}
