@@ -4,20 +4,20 @@
 
 ## Commands
 
-** Create Application
+**Create Application**
 ```
 ./bin/ebd create application -a <app-name>
 -r <aws-region>
 ```
 
-** Create Environment
+**Create Environment**
 ```
 ./bin/ebd create environment -a <env_name> -e <env-name> -t <tier> -b <s3-bucket/s3-folder> -c <config-file> -l v1
 -r <aws-region>
 -p <aws-profile>
 ```
 
-** Update Environment
+**Update Environment**
 ```
 ./bin/ebd update environment -a <env_name> -e <env-name> -t <tier> -b <s3-bucket/s3-folder> -l v1
 
@@ -27,7 +27,7 @@ Optional Args:
 -p <aws-profile>
 ```
 
-** List Application
+**List Application**
 ```
 ./bin/ebd list applications
 
@@ -39,7 +39,7 @@ Optional Args:
 Optional Args:
 
 
-** List Environments
+**List Environments**
 ```
 ./bin/ebd list environments
 
@@ -50,7 +50,7 @@ Optional Args:
 -v
 ```
 
-** Delete Application
+**Delete Application**
 ```
 ./bin/ebd delete application -a <app-name>
 
@@ -59,7 +59,7 @@ Optional Args:
 -r <aws-region>
 ```
 
-** Delete Environment
+**Delete Environment**
 ```
 ./bin/ebd delete environment -a <app-name> -e <env-name> -t <worker>
 ```
