@@ -115,15 +115,14 @@ func createFunction(createMethod string, awsConfig config.Config) {
 	s3Service := s3.New(awsConfig)
 	bucketInfo := s3Service.ParseS3Bucket(*createEnvironmentS3Arg)
 
-	ebService := elasticbeanstalk.New(
-		*createEnvironmentApplicationNameArg, *createEnvironmentNameArg,
-		*createEnvironmentVersionArg, *createEnvironmentDescriptionArg,
-		bucketInfo, *createEnvironmentVersionArg+".zip",
-		*createEnvironmentTierArg, awsConfig,
-	)
-
 	switch createMethod {
 	case "create application":
+		ebService := elasticbeanstalk.New(
+			*createEnvironmentApplicationNameArg, *createEnvironmentNameArg,
+			*createEnvironmentVersionArg, *createEnvironmentDescriptionArg,
+			bucketInfo, *createEnvironmentVersionArg+".zip",
+			*createEnvironmentTierArg, awsConfig,
+		)
 		ebService.CreateApplication(*createApplicationNameArg)
 	case "create environment":
 		environment := utils.GetDefault(*createEnvironmentNameArg, *createEnvironmentApplicationNameArg)
@@ -139,7 +138,8 @@ func createFunction(createMethod string, awsConfig config.Config) {
 		additionalConfigOptions := make(map[string]string)
 		additionalConfigOptions["EnvName"] = environment
 		additionalConfigOptions["AppName"] = *createEnvironmentApplicationNameArg
-		additionalConfigOptions["AppKey"] = s3Service.ParseS3Bucket(*createEnvironmentS3Arg)[1] + "/" + *createEnvironmentVersionArg + ".zip"
+		additionalConfigOptions["AppBucket"] = bucketInfo[0]
+		additionalConfigOptions["AppKey"] = bucketInfo[1] + "/" + *createEnvironmentVersionArg + ".zip"
 		additionalConfigOptions["Tier"] = *createEnvironmentTierArg
 
 		configOptions := utils.GetConfig(*createEnvironmentConfigArg)
