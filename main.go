@@ -34,7 +34,8 @@ var (
 	createEnvironmentS3Arg              = createEnvironment.Flag("bucket", "S3 bucket name").Short('b').String()
 	createEnvironmentConfigArg          = createEnvironment.Flag("config", "Config yml file").Short('c').String()
 	createEnvironmentVersionArg         = createEnvironment.Flag("version-label", "Version").Short('l').String()
-	createEnvironmentDescriptionArg     = createEnvironment.Flag("desc", "Description of Version").Short('d').String()
+	createEnvironmentLocalFilePathArg   = createEnvironment.Flag("local-file-prefix", "The directory (prefix) of the file to upload.").Short('d').String()
+	createEnvironmentDescriptionArg     = createEnvironment.Flag("desc", "Description of Version").String()
 
 	delete = kingpin.Command("delete", "Destroy EB")
 	// Application
@@ -54,6 +55,7 @@ var (
 	updateEnvironmentVersionArg         = updateEnvironment.Flag("version-label", "Version").Required().Short('l').String()
 	updateEnvironmentTierArg            = updateEnvironment.Flag("tier", "Environment Tier").Required().Short('t').String()
 	updateEnvironmentS3Arg              = updateEnvironment.Flag("bucket", "S3 Bucket Name + path").Short('b').String()
+	updateEnvironmentLocalFilePathArg   = updateEnvironment.Flag("local-file-prefix", "The directory (prefix) of the file to upload.").Short('d').String()
 	updateEnvironmentDescriptionArg     = updateEnvironment.Flag("desc", "Description of Version").Short('d').String()
 
 	rollback = kingpin.Command("rollback", "Rollback EB")
@@ -116,13 +118,12 @@ func createFunction(createMethod string, awsConfig config.Config) {
 	ebService := elasticbeanstalk.New(
 		*createEnvironmentApplicationNameArg, *createEnvironmentNameArg,
 		*createEnvironmentVersionArg, *createEnvironmentDescriptionArg,
-		bucketInfo, "versions/"+*createEnvironmentVersionArg+".zip",
+		bucketInfo, *createEnvironmentVersionArg+".zip",
 		*createEnvironmentTierArg, awsConfig,
 	)
 
 	switch createMethod {
 	case "create application":
-		//aws.ShellOut(fmt.Sprintf("Creating application : %s", *createApplicationNameArg), aws.ShellOutParams{CmdName: "aws", CmdArgs:  []string{"elasticbeanstalk", "create-application", "--application-name", *createApplicationNameArg}})
 		ebService.CreateApplication(*createApplicationNameArg)
 	case "create environment":
 		environment := utils.GetDefault(*createEnvironmentNameArg, *createEnvironmentApplicationNameArg)
@@ -133,12 +134,12 @@ func createFunction(createMethod string, awsConfig config.Config) {
 			return
 		}
 
-		s3Service.UploadSingleFile(*createEnvironmentS3Arg, "versions/"+*createEnvironmentVersionArg+".zip", *createEnvironmentVersionArg)
+		s3Service.UploadSingleFile(*createEnvironmentS3Arg, *createEnvironmentLocalFilePathArg+"/"+*createEnvironmentVersionArg+".zip", *createEnvironmentVersionArg)
 
 		additionalConfigOptions := make(map[string]string)
 		additionalConfigOptions["EnvName"] = environment
 		additionalConfigOptions["AppName"] = *createEnvironmentApplicationNameArg
-		additionalConfigOptions["AppKey"] = s3Service.ParseS3Bucket(*createEnvironmentS3Arg)[1] + "/" + "versions/" + *createEnvironmentVersionArg + ".zip"
+		additionalConfigOptions["AppKey"] = s3Service.ParseS3Bucket(*createEnvironmentS3Arg)[1] + "/" + *createEnvironmentVersionArg + ".zip"
 		additionalConfigOptions["Tier"] = *createEnvironmentTierArg
 
 		configOptions := utils.GetConfig(*createEnvironmentConfigArg)
@@ -195,7 +196,7 @@ func updateFunction(updateMethod string, awsConfig config.Config) {
 	switch updateMethod {
 	case "update environment":
 		if *updateEnvironmentS3Arg != "" {
-			s3Service.UploadSingleFile(*updateEnvironmentS3Arg, "versions/"+*updateEnvironmentVersionArg+".zip", *updateEnvironmentVersionArg)
+			s3Service.UploadSingleFile(*updateEnvironmentS3Arg, updateEnvironmentLocalFilePathArg+"/"+*updateEnvironmentVersionArg+".zip", *updateEnvironmentVersionArg)
 		}
 		svc.UpdateEnvironment()
 	}
