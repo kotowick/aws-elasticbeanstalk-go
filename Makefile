@@ -3,7 +3,7 @@
 #
 # NOTE: OSX only
 VERSION=$$(cat main.go | grep -i "cliVersion =" | awk {'print$$3'} | tr -d '"')
-
+BINARY_NAME=ebd
 
 all: clean build compress report
 
@@ -12,14 +12,15 @@ clean:
 	@rm -f ./bin/ebd
 
 build:
-	@echo Building ebd version $(VERSION)
-	@go build -o ./bin/ebd
+	@echo Building $(BINARY_NAME) version $(VERSION)
+	@go build -a -tags netgo -ldflags '-w' -o ./bin/$(BINARY_NAME)-$(VERSION)
+	@cp ./bin/$(BINARY_NAME)-$(VERSION) ./bin/$(BINARY_NAME)-latest
 
 compress:
-	@tar czf /tmp/ebd-$(VERSION).tar.gz ./versions
+	@tar czf /tmp/$(BINARY_NAME)-$(VERSION).tar.gz ./versions
 
 report:
-	@rm -f ./bin/ebd
-	@shasum -a 256 /tmp/ebd-$(VERSION).tar.gz
+	@rm -f ./bin/$(BINARY_NAME)
+	@shasum -a 256 /tmp/$(BINARY_NAME)-$(VERSION).tar.gz
 
 .PHONY: all clean build

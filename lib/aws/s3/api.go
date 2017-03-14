@@ -3,60 +3,70 @@
 package s3
 
 import (
-  "github.com/aws/aws-sdk-go/aws"
-  "github.com/aws/aws-sdk-go/aws/awsutil"
-  "github.com/aws/aws-sdk-go/service/s3"
-  "fmt"
-  "os"
-  "bytes"
-  "net/http"
-  "strings"
+	"bytes"
+	"fmt"
+	"net/http"
+	"os"
+	"strings"
+
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/awsutil"
+	"github.com/aws/aws-sdk-go/service/s3"
 )
 
-func (c *S3) UploadSingleFile(bucket_path string, file_name string, versionLabel string){
-  file, err := os.Open(file_name)
-  if err != nil {
-    fmt.Printf("err opening file: %s", err)
-  }
-  defer file.Close()
+// UploadSingleFile uploads a file to S3.
+//
+// Example:
+//     // Upload fileName to S3.
+//     svc := s3.UploadSingleFile(bucketPath, fileName, versionLabel)
+//
+func (c *S3) UploadSingleFile(bucketPath string, fileName string, versionLabel string) {
+	file, err := os.Open(fileName)
+	if err != nil {
+		fmt.Printf("err opening file: %s", err)
+	}
+	defer file.Close()
 
+	fileInfo, _ := file.Stat()
+	var size int64 = fileInfo.Size()
 
-  fileInfo, _ := file.Stat()
-  var size int64 = fileInfo.Size()
+	buffer := make([]byte, size)
+	file.Read(buffer)
+	fileBytes := bytes.NewReader(buffer)
+	fileType := http.DetectContentType(buffer)
 
-  buffer := make([]byte, size)
-  file.Read(buffer)
-  fileBytes := bytes.NewReader(buffer)
-  fileType := http.DetectContentType(buffer)
+	bucketInfo := c.ParseS3Bucket(bucketPath)
 
-  bucket_info := c.ParseS3Bucket(bucket_path)
+	fmt.Printf("Uploading [ %s ] to S3 bucket : %s", file.Name(), bucketPath)
 
-  fmt.Printf("Uploading [ %s ] to S3 bucket : %s", file.Name(), bucket_path)
+	params := &s3.PutObjectInput{
+		Bucket:        aws.String(bucketInfo[0]),
+		Key:           aws.String(bucketInfo[1] + "/" + versionLabel + ".zip"),
+		Body:          fileBytes,
+		ContentLength: aws.Int64(size),
+		ContentType:   aws.String(fileType),
+	}
 
-  //fmt.Println(bucket_info[1] + "/" + versionLabel + ".zip")
-
-  params := &s3.PutObjectInput{
-    Bucket: aws.String(bucket_info[0]),
-    Key: aws.String(bucket_info[1] + "/" + versionLabel + ".zip"),
-    Body: fileBytes,
-    ContentLength: aws.Int64(size),
-    ContentType: aws.String(fileType),
-  }
-
-  resp, err := c.Service.PutObject(params)
-  if err != nil {
-    fmt.Printf("bad response: %s", err)
-  }
-  fmt.Printf("response %s", awsutil.StringValue(resp))
+	resp, err := c.Service.PutObject(params)
+	if err != nil {
+		fmt.Printf("bad response: %s", err)
+	}
+	fmt.Printf("response %s", awsutil.StringValue(resp))
 }
 
-func (c *S3) ParseS3Bucket(bucket_path string) [2]string{
-  bucket_path_split := strings.Split(bucket_path, "/")
-  var rtn [2]string
+// ParseS3Bucket splits up a s3 path (bucket/directory) string.
+//
+// Example:
+//     // Split s3 path
+//     svc := s3.ParseS3Bucket(bucketPath)
+//
+func (c *S3) ParseS3Bucket(bucketPath string) [2]string {
+	bucketSplit := strings.Split(bucketPath, "/")
+	var rtn [2]string
 
-  rtn[0] = bucket_path_split[0]
+	rtn[0] = bucketSplit[0]
 
-  rtn[1] = strings.Join(bucket_path_split[1:],"/")
+	rtn[1] = strings.Join(bucketSplit[1:], "/")
 
-  return rtn
+	return rtn
 }

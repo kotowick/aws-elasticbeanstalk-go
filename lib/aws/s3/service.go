@@ -1,10 +1,10 @@
-// Package cloudformation provides a client for AWS CloudFormation.
+// Package s3 provides a client for AWS S3.
 //
 package s3
 
 import (
-  "github.com/aws/aws-sdk-go/service/s3"
-  "../config"
+	"../config"
+	"github.com/aws/aws-sdk-go/service/s3"
 )
 
 // S3 is a client for Amazon S3.
@@ -12,8 +12,8 @@ import (
 // It is not safe to mutate any of the client's properties though.
 // Please also see https://docs.aws.amazon.com/goto/WebAPI/s3-2006-03-01
 type S3 struct {
-  AwsConfig       *config.Config
-  Service         *s3.S3
+	AwsConfig *config.Config
+	Service   *s3.S3
 }
 
 // New creates a new instance of the S3 client.
@@ -29,9 +29,9 @@ func New(awsConfig config.Config) *S3 {
 // newClient creates, initializes and returns a new S3 client instance.
 //
 func newClient(awsConfig config.Config) *S3 {
-  svc := &S3{
-    AwsConfig: &awsConfig,
-    Service: s3.New(awsConfig.Session, awsConfig.AwsConfig),
+	svc := &S3{
+		AwsConfig: &awsConfig,
+		Service:   s3.New(awsConfig.Session, awsConfig.AwsConfig),
 	}
 
 	return svc

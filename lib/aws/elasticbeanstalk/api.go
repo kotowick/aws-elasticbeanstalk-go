@@ -3,9 +3,10 @@
 package elasticbeanstalk
 
 import (
-  "github.com/aws/aws-sdk-go/aws"
-  "github.com/aws/aws-sdk-go/service/elasticbeanstalk"
-  "fmt"
+	"fmt"
+
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/service/elasticbeanstalk"
 )
 
 // UpdateEnvironment API operation for Elastic Beanstalk.
@@ -27,24 +28,24 @@ import (
 //
 // Please also see https://docs.aws.amazon.com/goto/WebAPI/elasticbeanstalk-2010-12-01/UpdateEnvironment
 //
-func (c *ElasticBeanstalk) UpdateEnvironment(){
-  c.CreateApplicationVersion()
-  c.UpdateApplicationVersion()
+func (c *ElasticBeanstalk) UpdateEnvironment() {
+	c.CreateApplicationVersion()
+	c.UpdateApplicationVersion()
 
-  params := &elasticbeanstalk.UpdateEnvironmentInput{
-      ApplicationName: aws.String(c.ApplicationName),
-      EnvironmentName: aws.String(c.EnvironmentName),
-      VersionLabel: aws.String(c.UniqueVersionLabel),
-  }
-  resp, err := c.Service.UpdateEnvironment(params)
+	params := &elasticbeanstalk.UpdateEnvironmentInput{
+		ApplicationName: aws.String(c.ApplicationName),
+		EnvironmentName: aws.String(c.EnvironmentName),
+		VersionLabel:    aws.String(c.UniqueVersionLabel),
+	}
+	resp, err := c.Service.UpdateEnvironment(params)
 
-  if err != nil {
-      fmt.Println(err.Error())
-      return
-  }
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
 
-  // Pretty-print the response data.
-  fmt.Println(resp)
+	// Pretty-print the response data.
+	fmt.Println(resp)
 }
 
 // UpdateApplicationVersion API operation for AWS Elastic Beanstalk.
@@ -62,22 +63,22 @@ func (c *ElasticBeanstalk) UpdateEnvironment(){
 // API operation UpdateApplicationVersion for usage and error information.
 // Please also see https://docs.aws.amazon.com/goto/WebAPI/elasticbeanstalk-2010-12-01/UpdateApplicationVersion
 //
-func (c *ElasticBeanstalk) UpdateApplicationVersion(){
-  params := &elasticbeanstalk.UpdateApplicationVersionInput{
-      ApplicationName: aws.String(c.ApplicationName), // Required
-      VersionLabel:    aws.String(c.UniqueVersionLabel),    // Required
-      Description:     aws.String(c.Description),
-  }
+func (c *ElasticBeanstalk) UpdateApplicationVersion() {
+	params := &elasticbeanstalk.UpdateApplicationVersionInput{
+		ApplicationName: aws.String(c.ApplicationName),    // Required
+		VersionLabel:    aws.String(c.UniqueVersionLabel), // Required
+		Description:     aws.String(c.Description),
+	}
 
-  resp, err := c.Service.UpdateApplicationVersion(params)
+	resp, err := c.Service.UpdateApplicationVersion(params)
 
-  if err != nil {
-    fmt.Println(err.Error())
-    return
-  }
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
 
-  // Pretty-print the response data.
-  fmt.Println(resp)
+	// Pretty-print the response data.
+	fmt.Println(resp)
 }
 
 // CreateApplicationVersion API operation for AWS Elastic Beanstalk.
@@ -105,27 +106,27 @@ func (c *ElasticBeanstalk) UpdateApplicationVersion(){
 //
 // Please also see https://docs.aws.amazon.com/goto/WebAPI/elasticbeanstalk-2010-12-01/CreateApplicationVersion
 //
-func (c *ElasticBeanstalk) CreateApplicationVersion(){
-  params := &elasticbeanstalk.CreateApplicationVersionInput{
-      ApplicationName:        aws.String(c.ApplicationName), // Required
-      VersionLabel:           aws.String(c.UniqueVersionLabel),    // Required
-      Description:            aws.String(c.Description),
-      AutoCreateApplication:  aws.Bool(true),
-      Process:                aws.Bool(true),
-      SourceBundle: &elasticbeanstalk.S3Location{
-        S3Bucket:             aws.String(c.S3Bucket),
-        S3Key:                aws.String(c.S3Key),
-      },
-  }
+func (c *ElasticBeanstalk) CreateApplicationVersion() {
+	params := &elasticbeanstalk.CreateApplicationVersionInput{
+		ApplicationName:       aws.String(c.ApplicationName),    // Required
+		VersionLabel:          aws.String(c.UniqueVersionLabel), // Required
+		Description:           aws.String(c.Description),
+		AutoCreateApplication: aws.Bool(true),
+		Process:               aws.Bool(true),
+		SourceBundle: &elasticbeanstalk.S3Location{
+			S3Bucket: aws.String(c.S3Bucket),
+			S3Key:    aws.String(c.S3Key),
+		},
+	}
 
-  resp, err := c.Service.CreateApplicationVersion(params)
+	resp, err := c.Service.CreateApplicationVersion(params)
 
-  if err != nil {
-    fmt.Println(err.Error())
-    return
-  }
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
 
-  fmt.Println(resp)
+	fmt.Println(resp)
 }
 
 // ListApplications API operation for AWS Elastic Beanstalk.
@@ -135,21 +136,21 @@ func (c *ElasticBeanstalk) CreateApplicationVersion(){
 // See the AWS API reference guide for AWS Elastic Beanstalk's
 // API operation DescribeApplications for usage and error information.
 // Please also see https://docs.aws.amazon.com/goto/WebAPI/elasticbeanstalk-2010-12-01/DescribeApplications
-func (c *ElasticBeanstalk) ListApplications(verbose bool){
-  resp, err := c.Service.DescribeApplications(&elasticbeanstalk.DescribeApplicationsInput{})
+func (c *ElasticBeanstalk) ListApplications(verbose bool) {
+	resp, err := c.Service.DescribeApplications(&elasticbeanstalk.DescribeApplicationsInput{})
 
-  if err != nil {
-    fmt.Println(err.Error())
-    return
+	if err != nil {
+		fmt.Println(err.Error())
+		return
 	}
 
-  if verbose {
-    fmt.Println(resp)
-  } else {
-    for j := range resp.Applications{
-      fmt.Printf("%s", *resp.Applications[j].ApplicationName)
-    }
-  }
+	if verbose {
+		fmt.Println(resp)
+	} else {
+		for j := range resp.Applications {
+			fmt.Printf("%s", *resp.Applications[j].ApplicationName)
+		}
+	}
 }
 
 // ListEnvironments API operation for AWS Elastic Beanstalk.
@@ -159,31 +160,31 @@ func (c *ElasticBeanstalk) ListApplications(verbose bool){
 // See the AWS API reference guide for AWS Elastic Beanstalk's
 // API operation DescribeEnvironments for usage and error information.
 // Please also see https://docs.aws.amazon.com/goto/WebAPI/elasticbeanstalk-2010-12-01/DescribeEnvironments
-func (c *ElasticBeanstalk) ListEnvironments(verbose bool, applicationName string, environmentName string){
-  params := &elasticbeanstalk.DescribeEnvironmentsInput{}
+func (c *ElasticBeanstalk) ListEnvironments(verbose bool, applicationName string, environmentName string) {
+	params := &elasticbeanstalk.DescribeEnvironmentsInput{}
 
-  if applicationName != "" {
-    params.ApplicationName = aws.String(applicationName)
-  }
+	if applicationName != "" {
+		params.ApplicationName = aws.String(applicationName)
+	}
 
-  if environmentName != "" {
-    params.EnvironmentNames = []*string{aws.String(environmentName)}
-  }
+	if environmentName != "" {
+		params.EnvironmentNames = []*string{aws.String(environmentName)}
+	}
 
-  resp, err := c.Service.DescribeEnvironments(params)
+	resp, err := c.Service.DescribeEnvironments(params)
 
-  if err != nil {
-      fmt.Println(err.Error())
-      return
-  }
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
 
-  if verbose {
-    fmt.Println(resp)
-  } else {
-    for j := range resp.Environments{
-      fmt.Printf("%s", *resp.Environments[j].EnvironmentName)
-    }
-  }
+	if verbose {
+		fmt.Println(resp)
+	} else {
+		for j := range resp.Environments {
+			fmt.Printf("%s", *resp.Environments[j].EnvironmentName)
+		}
+	}
 }
 
 // DeleteApplication API operation for AWS Elastic Beanstalk.
@@ -198,19 +199,19 @@ func (c *ElasticBeanstalk) ListEnvironments(verbose bool, applicationName string
 // API operation DeleteApplication for usage and error information.
 //
 // Please also see https://docs.aws.amazon.com/goto/WebAPI/elasticbeanstalk-2010-12-01/DeleteApplication
-func (c *ElasticBeanstalk) DeleteApplication(applicationName string){
-  params := &elasticbeanstalk.DeleteApplicationInput{
-      ApplicationName:     aws.String(applicationName), // Required
-      //TerminateEnvByForce: aws.Bool(true),
-  }
-  resp, err := c.Service.DeleteApplication(params)
+func (c *ElasticBeanstalk) DeleteApplication(applicationName string) {
+	params := &elasticbeanstalk.DeleteApplicationInput{
+		ApplicationName: aws.String(applicationName), // Required
+		//TerminateEnvByForce: aws.Bool(true),
+	}
+	resp, err := c.Service.DeleteApplication(params)
 
-  if err != nil {
-      fmt.Println(err.Error())
-      return
-  }
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
 
-  fmt.Println(resp)
+	fmt.Println(resp)
 }
 
 // CreateApplication API operation for AWS Elastic Beanstalk.
@@ -223,13 +224,13 @@ func (c *ElasticBeanstalk) DeleteApplication(applicationName string){
 //
 // Please also see https://docs.aws.amazon.com/goto/WebAPI/elasticbeanstalk-2010-12-01/CreateApplication
 func (c *ElasticBeanstalk) CreateApplication(applicationName string) {
-	params := &elasticbeanstalk.CreateApplicationInput{ ApplicationName: aws.String(applicationName) }
-  resp, err := c.Service.CreateApplication(params)
+	params := &elasticbeanstalk.CreateApplicationInput{ApplicationName: aws.String(applicationName)}
+	resp, err := c.Service.CreateApplication(params)
 
-  if err != nil {
-      fmt.Println(err.Error())
-      return
-  }
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
 
-  fmt.Println(resp)
+	fmt.Println(resp)
 }

@@ -3,13 +3,13 @@
 package cloudformation
 
 import (
-  "github.com/aws/aws-sdk-go/service/cloudformation"
-  "../config"
+	"../config"
+	"github.com/aws/aws-sdk-go/service/cloudformation"
 )
 
 type CloudFormation struct {
-  AwsConfig       *config.Config
-  Service *cloudformation.CloudFormation
+	AwsConfig *config.Config
+	Service   *cloudformation.CloudFormation
 }
 
 // New creates a new instance of the Cloudformation client.
@@ -25,9 +25,9 @@ func New(awsConfig config.Config) *CloudFormation {
 // newClient creates, initializes and returns a new Cloudformation client instance.
 //
 func newClient(awsConfig config.Config) *CloudFormation {
-  svc := &CloudFormation{
-    AwsConfig: &awsConfig,
-    Service: cloudformation.New(awsConfig.Session, awsConfig.AwsConfig),
+	svc := &CloudFormation{
+		AwsConfig: &awsConfig,
+		Service:   cloudformation.New(awsConfig.Session, awsConfig.AwsConfig),
 	}
 
 	return svc

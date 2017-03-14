@@ -3,10 +3,12 @@
 package config
 
 import (
-  "github.com/aws/aws-sdk-go/aws/session"
-  "github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/session"
 )
 
+// Config struct
+//
 // AWS Elastic Beanstalk makes it easy for you to create, deploy, and manage
 // scalable, fault-tolerant applications running on the Amazon Web Services
 // cloud.
@@ -20,10 +22,10 @@ import (
 // go to Tools for Amazon Web Services (http://aws.amazon.com/tools/).
 //
 type Config struct {
-  Profile         string
-  Region          string
-  Session         *session.Session
-  AwsConfig       *aws.Config
+	Profile   string
+	Region    string
+	Session   *session.Session
+	AwsConfig *aws.Config
 }
 
 // New creates a new instance of the ElasticBeanstalk client.
@@ -33,27 +35,27 @@ type Config struct {
 //     svc := elasticbeanstalk.New(applicationName, environmentName,
 //                                 versionLabel, description, s3Bucket, s3Key)
 //
-func New(region string, accessKeyId string, secretAccessKey string, cred_path string, profile string) *Config {
-	return newClient(region, accessKeyId, secretAccessKey, cred_path, profile)
+func New(region string, accessKeyID string, secretAccessKey string, credPath string, profile string) *Config {
+	return newClient(region, accessKeyID, secretAccessKey, credPath, profile)
 }
 
 // newClient creates, initializes and returns a new AWS Config service.
 //
-func newClient(region string, accessKeyId string, secretAccessKey string, cred_path string, profile string) *Config {
-  conf := &aws.Config{
-    Credentials: GetCredentials(accessKeyId, secretAccessKey, cred_path, profile),
-    Region: aws.String(region),
-  }
-
-  sess := session.Must(session.NewSession(conf))
-
-  svc := &Config{
-    Profile: profile,
-    Region: region,
-    Session: sess,
-    AwsConfig: conf,
+func newClient(region string, accessKeyID string, secretAccessKey string, credPath string, profile string) *Config {
+	conf := &aws.Config{
+		Credentials: GetCredentials(accessKeyID, secretAccessKey, credPath, profile),
+		Region:      aws.String(region),
 	}
 
-  svc.PrintInfo()
+	sess := session.Must(session.NewSession(conf))
+
+	svc := &Config{
+		Profile:   profile,
+		Region:    region,
+		Session:   sess,
+		AwsConfig: conf,
+	}
+
+	svc.PrintInfo()
 	return svc
 }
