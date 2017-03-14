@@ -56,7 +56,7 @@ var (
 	updateEnvironmentTierArg            = updateEnvironment.Flag("tier", "Environment Tier").Required().Short('t').String()
 	updateEnvironmentS3Arg              = updateEnvironment.Flag("bucket", "S3 Bucket Name + path").Short('b').String()
 	updateEnvironmentLocalFilePathArg   = updateEnvironment.Flag("local-file-prefix", "The directory (prefix) of the file to upload.").Short('d').String()
-	updateEnvironmentDescriptionArg     = updateEnvironment.Flag("desc", "Description of Version").Short('d').String()
+	updateEnvironmentDescriptionArg     = updateEnvironment.Flag("desc", "Description of Version").String()
 
 	rollback = kingpin.Command("rollback", "Rollback EB")
 
@@ -196,7 +196,7 @@ func updateFunction(updateMethod string, awsConfig config.Config) {
 	switch updateMethod {
 	case "update environment":
 		if *updateEnvironmentS3Arg != "" {
-			s3Service.UploadSingleFile(*updateEnvironmentS3Arg, updateEnvironmentLocalFilePathArg+"/"+*updateEnvironmentVersionArg+".zip", *updateEnvironmentVersionArg)
+			s3Service.UploadSingleFile(*updateEnvironmentS3Arg, *updateEnvironmentLocalFilePathArg+"/"+*updateEnvironmentVersionArg+".zip", *updateEnvironmentVersionArg)
 		}
 		svc.UpdateEnvironment()
 	}
