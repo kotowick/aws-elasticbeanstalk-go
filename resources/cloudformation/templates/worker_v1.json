@@ -1,72 +1,287 @@
 {
 	"Parameters" : {
-
 		"appName" : {
 			"Description" : "Name of Application.",
 			"Type" : "String"
 		},
-
+		"versionLabel" : {
+			"Description" : "Name of Version.",
+			"Type" : "String"
+		},
 		"appBucket" : {
 			"Description" : "Bucket name where App Bundle is located.",
 			"Type" : "String"
 		},
-
 		"appKey" : {
 			"Description" : "Folder/Filename of App Bundle.",
 			"Type" : "String"
 		},
-
 		"envName" : {
 			"Description" : "Name of the Environment",
 			"Type" : "String"
 		},
-
 		"tier" : {
 			"Description" : "Environment Tier (webserver or worker)",
 			"Type" : "String",
 			"Default" : "Worker"
 		},
-
-		"vpc" : {
+		"vpcId" : {
 			"Description" : "Name of existing VPC ID.",
 			"Type" : "String"
 		},
-
-		"privateSubnets" : {
+		"vpcPrivateSubnets" : {
 			"Description" : "Subnet Id(s) for application assignment.",
 			"Type" : "String"
 		},
-
-		"publicSubnets" : {
+		"vpcElbSubnets" : {
 			"Description" : "Subnet Id(s) for ELB assignment.",
 			"Type" : "String"
 		},
-
-		"elbCross" : {
+		"loadbalancerCrossZone" : {
 			"Description" : "Will ELB cross availability zones. True/False Boolean.",
 			"Type" : "String",
 			"Default" : "true",
 			"AllowedValues" : [ "true", "false" ]
 		},
-
+		"loadbalancerSecurityGroups" : {
+			"Description" : "Will ELB cross availability zones. True/False Boolean.",
+			"Type" : "String",
+			"Default" : ""
+		},
+		"loadbalancerManagedSecurityGroup" : {
+			"Description" : "Will ELB cross availability zones. True/False Boolean.",
+			"Type" : "String",
+			"Default" : ""
+		},
+		"environmentServiceRole" : {
+			"Description" : "IAM role used by Elastic Beanstalk to manage services.",
+			"Type" : "String",
+			"Default" : "aws-elasticbeanstalk-service-role"
+		},
+		"vpcElbScheme" : {
+			"Description" : "Internal or External",
+			"Type" : "String",
+			"Default" : "Internal"
+		},
+		"vpcAssociatePublicIpAddress" : {
+			"Description" : "",
+			"Type" : "String",
+			"Default" : "false",
+			"AllowedValues" : [ "true", "false" ]
+		},
+		"asgAvailabilityZones" : {
+			"Description" : "",
+			"Type" : "String",
+			"Default" : "Any 2"
+		},
+		"asgMinSize" : {
+			"Description" : "",
+			"Type" : "Number",
+			"Default" : "1"
+		},
+		"asgMaxSize" : {
+			"Description" : "",
+			"Type" : "Number",
+			"Default" : "4"
+		},
+		"asgCooldown" : {
+			"Description" : "",
+			"Type" : "Number",
+			"Default" : "360"
+		},
 		"solutionStack" : {
 			"Description" : "Solution Stack used for build.",
 			"Type" : "String"
 		},
-
-		"keyName" : {
-      "Description" : "Name of an existing EC2 KeyPair to enable SSH access to the Elastic Beanstalk hosts",
-      "Type": "String"
-    },
-
-		"serviceRole" : {
-			"Description" : "IAM role used by Elastic Beanstalk to manage services.",
-			"Type" : "String"
+		"launchconfigEc2KeyName" : {
+			"Description" : "Name of an existing EC2 KeyPair to enable SSH access to the Elastic Beanstalk hosts",
+			"Type": "String",
+			"Default" : ""
 		},
-
-		"instanceRole" : {
+		"launchconfigInstanceRole" : {
 			"Description" : "IAM role used by Elastic Beanstalk to manage instances.",
-			"Type" : "String"
+			"Type" : "String",
+			"Default" : "aws-elasticbeanstalk-ec2-role"
+		},
+		"launchconfigInstanceType" : {
+			"Description" : "Instance Type",
+			"Type" : "String",
+			"Default": "t1.micro"
+		},
+		"launchconfigMonitoringInterval" : {
+			"Description" : "",
+			"Type" : "String",
+			"Default" : "5 minute"
+		},
+		"launchconfigRootVolumeType" : {
+			"Description" : "",
+			"Type" : "String",
+			"Default" : "gp2"
+		},
+		"launchconfigRootVolumeSize" : {
+			"Description" : "",
+			"Type" : "Number",
+			"Default" : "15"
+		},
+		"cloudwatchStreamLogs" : {
+			"Description" : "",
+			"Type" : "String",
+			"Default" : "false"
+		},
+		"cloudwatchDeleteOnTerminate" : {
+			"Description" : "",
+			"Type" : "String",
+			"Default" : "false"
+		},
+		"cloudwatchRetentionInDays" : {
+			"Description" : "",
+			"Type" : "Number",
+			"Default" : "7"
+		},
+		"commandDeploymentPolicy" : {
+			"Description" : "",
+			"Type" : "String",
+			"Default" : "AllAtOnce"
+		},
+		"commandTimeout" : {
+			"Description" : "",
+			"Type" : "String",
+			"Default" : "600"
+		},
+		"commandBatchSizeType" : {
+			"Description" : "",
+			"Type" : "String",
+			"Default" : "Percentage"
+		},
+		"commandBatchSize" : {
+			"Description" : "",
+			"Type" : "Number",
+			"Default" : "100"
+		},
+		"commandIgnoreHealthCheck" : {
+			"Description" : "",
+			"Type" : "String",
+			"Default" : "false"
+		},
+		"commandHealthcheckSuccessThreshold" : {
+			"Description" : "",
+			"Type" : "String",
+			"Default" : "Ok"
+		},
+		"healthcheckHealthyThreshold" : {
+			"Description" : "",
+			"Type" : "Number",
+			"Default" : "3"
+		},
+		"healthcheckInterval" : {
+			"Description" : "",
+			"Type" : "Number",
+			"Default" : "10"
+		},
+		"healthcheckTimeout" : {
+			"Description" : "",
+			"Type" : "Number",
+			"Default" : "5"
+		},
+		"healthcheckUnhealthyThreshold" : {
+			"Description" : "",
+			"Type" : "Number",
+			"Default" : "5"
+		},
+		"healthreportingSystemType" : {
+			"Description" : "",
+			"Type" : "String",
+			"Default" : "basic"
+		},
+		"monitoringAutomaticallyTerminateUnhealthyInstances" : {
+			"Description" : "",
+			"Type" : "String",
+			"Default" : "true"
+		},
+		"rollingupdateMinInstancesInService" : {
+			"Description" : "",
+			"Type" : "Number",
+			"Default" : "0"
+		},
+		"rollingupdateEnabled" : {
+			"Description" : "",
+			"Type" : "String",
+			"Default" : "false"
+		},
+		"rollingupdateType" : {
+			"Description" : "",
+			"Type" : "String",
+			"Default" : "Time"
+		},
+		"rollingupdateTimeout" : {
+			"Description" : "",
+			"Type" : "String",
+			"Default" : "PT30M"
+		},
+		"applicationHealthcheckUrl" : {
+			"Description" : "",
+			"Type" : "String",
+			"Default" : ""
+		},
+		"environmentLoadBalancerType" : {
+			"Description" : "",
+			"Type" : "String",
+			"Default" : "classic"
+		},
+		"environmentType" : {
+			"Description" : "",
+			"Type" : "String",
+			"Default" : "LoadBalanced"
+		},
+		"sqsdWorkerQueueUrl" : {
+			"Description" : "",
+			"Type" : "String",
+			"Default" : ""
+		},
+		"sqsdHttpPath" : {
+			"Description" : "",
+			"Type" : "String",
+			"Default" : "/"
+		},
+		"sqsdMimeType" : {
+			"Description" : "",
+			"Type" : "String",
+			"Default" : "application/json"
+		},
+		"sqsdHttpConnections" : {
+			"Description" : "",
+			"Type" : "String",
+			"Default" : "15"
+		},
+		"sqsdConnectTimeout" : {
+			"Description" : "",
+			"Type" : "String",
+			"Default" : "5"
+		},
+		"sqsdInactivityTimeout" : {
+			"Description" : "",
+			"Type" : "String",
+			"Default" : "180"
+		},
+		"sqsdVisibilityTimeout" : {
+			"Description" : "",
+			"Type" : "String",
+			"Default" : "300"
+		},
+		"sqsdErrorVisibilityTimeout" : {
+			"Description" : "",
+			"Type" : "Number",
+			"Default" : "2"
+		},
+		"sqsdRetentionPeriod" : {
+			"Description" : "",
+			"Type" : "Number",
+			"Default" : "345600"
+		},
+		"sqsdMaxRetries" : {
+			"Description" : "",
+			"Type" : "Number",
+			"Default" : "10"
 		}
 	},
 
@@ -75,6 +290,7 @@
   			"Type" : "AWS::ElasticBeanstalk::ApplicationVersion",
   			"Properties" : {
     			"ApplicationName" : { "Ref" : "appName" },
+					"Description": { "Ref" : "versionLabel" },
     			"SourceBundle" : {
       				"S3Bucket" : { "Ref" : "appBucket" },
       				"S3Key" : { "Ref" : "appKey" }
@@ -94,12 +310,54 @@
 							"Type" : "SQS/HTTP"
 						},
 						"OptionSettings" : [
-							{"Namespace" : "aws:ec2:vpc", "OptionName" : "VPCId", "Value" : { "Ref" : "vpc" }},
-							{"Namespace" : "aws:autoscaling:asg", "OptionName" : "Availability Zones", "Value" : "Any 2" },
-           		{"Namespace" : "aws:ec2:vpc", "OptionName" : "Subnets", "Value" : { "Ref" : "privateSubnets" }},
-							{"Namespace" : "aws:elasticbeanstalk:environment", "OptionName" : "ServiceRole", "Value" : { "Ref" : "serviceRole" }},
-							{"Namespace" : "aws:autoscaling:launchconfiguration", "OptionName" : "EC2KeyName", "Value" : { "Ref" : "keyName" }},
-							{"Namespace" : "aws:autoscaling:launchconfiguration", "OptionName" : "IamInstanceProfile", "Value" : { "Ref" : "instanceRole" }}
+							{"Namespace" : "aws:ec2:vpc", "OptionName" : "VPCId", "Value" : { "Ref" : "vpcId" }},
+							{"Namespace" : "aws:ec2:vpc", "OptionName" : "Subnets", "Value" : { "Ref" : "vpcPrivateSubnets" }},
+							{"Namespace" : "aws:ec2:vpc", "OptionName" : "ELBSubnets", "Value" : { "Ref" : "vpcElbSubnets" }},
+							{"Namespace" : "aws:ec2:vpc", "OptionName" : "ELBScheme", "Value" : { "Ref" : "vpcElbScheme" }},
+							{"Namespace" : "aws:ec2:vpc", "OptionName" : "AssociatePublicIpAddress", "Value" : { "Ref" : "vpcAssociatePublicIpAddress" }},
+							{"Namespace" : "aws:autoscaling:asg", "OptionName" : "Availability Zones", "Value" : { "Ref" : "asgAvailabilityZones" }},
+							{"Namespace" : "aws:autoscaling:asg", "OptionName" : "MinSize", "Value" : { "Ref" : "asgMinSize" }},
+							{"Namespace" : "aws:autoscaling:asg", "OptionName" : "MaxSize", "Value" : { "Ref" : "asgMaxSize" }},
+							{"Namespace" : "aws:autoscaling:asg", "OptionName" : "Cooldown", "Value" : { "Ref" : "asgCooldown" }},
+							{"Namespace" : "aws:autoscaling:launchconfiguration", "OptionName" : "EC2KeyName", "Value" : { "Ref" : "launchconfigEc2KeyName" }},
+							{"Namespace" : "aws:autoscaling:launchconfiguration", "OptionName" : "IamInstanceProfile", "Value" : {"Ref" : "launchconfigInstanceRole"}},
+							{"Namespace" : "aws:autoscaling:launchconfiguration", "OptionName" : "InstanceType", "Value" : { "Ref" : "launchconfigInstanceType" }},
+							{"Namespace" : "aws:autoscaling:launchconfiguration", "OptionName" : "MonitoringInterval", "Value" : { "Ref" : "launchconfigMonitoringInterval" }},
+							{"Namespace" : "aws:autoscaling:launchconfiguration", "OptionName" : "RootVolumeSize", "Value" : { "Ref" : "launchconfigRootVolumeSize" }},
+							{"Namespace" : "aws:autoscaling:launchconfiguration", "OptionName" : "RootVolumeType", "Value" : { "Ref" : "launchconfigRootVolumeType" }},
+							{"Namespace" : "aws:elasticbeanstalk:cloudwatch:logs", "OptionName" : "StreamLogs", "Value" : { "Ref" : "cloudwatchStreamLogs" }},
+							{"Namespace" : "aws:elasticbeanstalk:cloudwatch:logs", "OptionName" : "DeleteOnTerminate", "Value" : { "Ref" : "cloudwatchDeleteOnTerminate" }},
+							{"Namespace" : "aws:elasticbeanstalk:cloudwatch:logs", "OptionName" : "RetentionInDays", "Value" : { "Ref" : "cloudwatchRetentionInDays" }},
+							{"Namespace" : "aws:elasticbeanstalk:command", "OptionName" : "DeploymentPolicy", "Value" : { "Ref" : "commandDeploymentPolicy" }},
+							{"Namespace" : "aws:elasticbeanstalk:command", "OptionName" : "Timeout", "Value" : { "Ref" : "commandTimeout" }},
+							{"Namespace" : "aws:elasticbeanstalk:command", "OptionName" : "BatchSizeType", "Value" : { "Ref" : "commandBatchSizeType" }},
+							{"Namespace" : "aws:elasticbeanstalk:command", "OptionName" : "BatchSize", "Value" : { "Ref" : "commandBatchSize" }},
+							{"Namespace" : "aws:elasticbeanstalk:command", "OptionName" : "IgnoreHealthCheck", "Value" : { "Ref" : "commandIgnoreHealthCheck" }},
+							{"Namespace" : "aws:elasticbeanstalk:command", "OptionName" : "HealthCheckSuccessThreshold", "Value" : { "Ref" : "commandHealthcheckSuccessThreshold" }},
+							{"Namespace" : "aws:elb:healthcheck", "OptionName" : "HealthyThreshold", "Value" : { "Ref" : "healthcheckHealthyThreshold" }},
+							{"Namespace" : "aws:elb:healthcheck", "OptionName" : "Interval", "Value" : { "Ref" : "healthcheckInterval" }},
+							{"Namespace" : "aws:elb:healthcheck", "OptionName" : "Timeout", "Value" : { "Ref" : "healthcheckTimeout" }},
+							{"Namespace" : "aws:elb:healthcheck", "OptionName" : "UnhealthyThreshold", "Value" : { "Ref" : "healthcheckUnhealthyThreshold" }},
+							{"Namespace" : "aws:elasticbeanstalk:healthreporting:system", "OptionName" : "SystemType", "Value" : { "Ref" : "healthreportingSystemType" }},
+							{"Namespace" : "aws:elasticbeanstalk:monitoring", "OptionName" : "Automatically Terminate Unhealthy Instances", "Value" : { "Ref" : "monitoringAutomaticallyTerminateUnhealthyInstances" }},
+							{"Namespace" : "aws:autoscaling:updatepolicy:rollingupdate", "OptionName" : "MinInstancesInService", "Value" : { "Ref" : "rollingupdateMinInstancesInService" }},
+							{"Namespace" : "aws:autoscaling:updatepolicy:rollingupdate", "OptionName" : "RollingUpdateEnabled", "Value" : { "Ref" : "rollingupdateEnabled" }},
+							{"Namespace" : "aws:autoscaling:updatepolicy:rollingupdate", "OptionName" : "RollingUpdateType", "Value" : { "Ref" : "rollingupdateType" }},
+							{"Namespace" : "aws:autoscaling:updatepolicy:rollingupdate", "OptionName" : "Timeout", "Value" : { "Ref" : "rollingupdateTimeout" }},
+							{"Namespace" : "aws:elasticbeanstalk:application", "OptionName" : "Application Healthcheck URL", "Value" : { "Ref" : "applicationHealthcheckUrl" }},
+							{"Namespace" : "aws:elasticbeanstalk:environment", "OptionName" : "ServiceRole", "Value" : { "Ref" : "environmentServiceRole" }},
+							{"Namespace" : "aws:elasticbeanstalk:environment", "OptionName" : "LoadBalancerType", "Value" : { "Ref" : "environmentLoadBalancerType" }},
+							{"Namespace" : "aws:elasticbeanstalk:environment", "OptionName" : "EnvironmentType", "Value" : { "Ref" : "environmentType" }},
+							{"Namespace" : "aws:elasticbeanstalk:sqsd", "OptionName" : "WorkerQueueURL", "Value" : { "Ref" : "sqsdWorkerQueueUrl" }},
+							{"Namespace" : "aws:elasticbeanstalk:sqsd", "OptionName" : "HttpPath", "Value" : { "Ref" : "sqsdHttpPath" }},
+							{"Namespace" : "aws:elasticbeanstalk:sqsd", "OptionName" : "MimeType", "Value" : { "Ref" : "sqsdMimeType" }},
+							{"Namespace" : "aws:elasticbeanstalk:sqsd", "OptionName" : "HttpConnections", "Value" : { "Ref" : "sqsdHttpConnections" }},
+							{"Namespace" : "aws:elasticbeanstalk:sqsd", "OptionName" : "ConnectTimeout", "Value" : { "Ref" : "sqsdConnectTimeout" }},
+							{"Namespace" : "aws:elasticbeanstalk:sqsd", "OptionName" : "InactivityTimeout", "Value" : { "Ref" : "sqsdInactivityTimeout" }},
+							{"Namespace" : "aws:elasticbeanstalk:sqsd", "OptionName" : "VisibilityTimeout", "Value" : { "Ref" : "sqsdVisibilityTimeout" }},
+							{"Namespace" : "aws:elasticbeanstalk:sqsd", "OptionName" : "ErrorVisibilityTimeout", "Value" : { "Ref" : "sqsdErrorVisibilityTimeout" }},
+							{"Namespace" : "aws:elasticbeanstalk:sqsd", "OptionName" : "RetentionPeriod", "Value" : { "Ref" : "sqsdRetentionPeriod" }},
+							{"Namespace" : "aws:elasticbeanstalk:sqsd", "OptionName" : "MaxRetries", "Value" : { "Ref" : "sqsdMaxRetries" }}
 						]
    			}
 		}

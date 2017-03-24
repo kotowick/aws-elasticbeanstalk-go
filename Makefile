@@ -12,6 +12,8 @@ clean:
 	@rm -f ./bin/$(BINARY_NAME)
 
 build:
+	@echo Compiling resources/.. for version $(VERSION)
+	@go-bindata resources/...
 	@echo Building $(BINARY_NAME) version $(VERSION)
 	@go build -a -tags netgo -ldflags '-w' -o ./bin/$(BINARY_NAME)-$(VERSION)
 	@cp ./bin/$(BINARY_NAME)-$(VERSION) ./bin/$(BINARY_NAME)

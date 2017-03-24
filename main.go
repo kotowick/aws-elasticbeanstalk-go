@@ -25,17 +25,17 @@ var (
 	create = kingpin.Command("create", "Create EB")
 	// Application
 	createApplication        = create.Command("application", "Create Application")
-	createApplicationNameArg = createApplication.Flag("app-name", "Application Name to create").Required().Short('a').String()
+	createApplicationNameArg = createApplication.Flag("app-name", "Application Name to create").Required().Short('a').Envar("APP_NAME").String()
 	// Environment
 	createEnvironment                   = create.Command("environment", "Create Environment")
-	createEnvironmentApplicationNameArg = createEnvironment.Flag("app-name", "Application Name").Required().Short('a').String()
-	createEnvironmentNameArg            = createEnvironment.Flag("env-name", "Environment Name to create").Short('e').String()
-	createEnvironmentTierArg            = createEnvironment.Flag("tier", "Environment Tier").Required().Short('t').String()
-	createEnvironmentS3Arg              = createEnvironment.Flag("bucket", "S3 bucket name").Short('b').String()
-	createEnvironmentConfigArg          = createEnvironment.Flag("config", "Config yml file").Short('c').String()
-	createEnvironmentVersionArg         = createEnvironment.Flag("version-label", "Version").Short('l').String()
-	createEnvironmentLocalFilePathArg   = createEnvironment.Flag("local-file-prefix", "The directory (prefix) of the file to upload.").Short('d').String()
-	createEnvironmentDescriptionArg     = createEnvironment.Flag("desc", "Description of Version").String()
+	createEnvironmentApplicationNameArg = createEnvironment.Flag("app-name", "Application Name").Envar("APP_NAME").Required().Short('a').String()
+	createEnvironmentNameArg            = createEnvironment.Flag("env-name", "Environment Name to create").Short('e').Envar("ENV_NAME").String()
+	createEnvironmentTierArg            = createEnvironment.Flag("tier", "Environment Tier").Required().Short('t').Envar("ENV_TIER").String()
+	createEnvironmentS3Arg              = createEnvironment.Flag("bucket", "S3 bucket name").Short('b').Envar("ENV_S3_BUCKET_LOCATION").String()
+	createEnvironmentConfigArg          = createEnvironment.Flag("config", "Config yml file").Short('c').Envar("ENV_CONFIG_PATH").String()
+	createEnvironmentVersionArg         = createEnvironment.Flag("version-label", "Version").Short('l').Envar("ENV_VERSION_LABEL").String()
+	createEnvironmentLocalFilePathArg   = createEnvironment.Flag("local-file-prefix", "The directory (prefix) of the file to upload.").Short('d').Envar("ENV_LOCAL_FILE_PREFIX").String()
+	createEnvironmentDescriptionArg     = createEnvironment.Flag("desc", "Description of Version").Envar("ENV_DESCRIPTION").String()
 
 	delete = kingpin.Command("delete", "Destroy EB")
 	// Application
@@ -44,30 +44,31 @@ var (
 
 	// Environment
 	deleteEnvironment                   = delete.Command("environment", "Destroy environment")
-	deleteEnvironmentApplicationNameArg = deleteEnvironment.Flag("app-name", "Environment's application name").Required().Short('a').String()
-	deleteEnvironmentNameArg            = deleteEnvironment.Flag("env-name", "Environment to delete").Required().Short('e').String()
-	deleteEnvironmentTierArg            = deleteEnvironment.Flag("tier", "Tier Name (worker | webserver)").Required().Short('t').String()
+	deleteEnvironmentApplicationNameArg = deleteEnvironment.Flag("app-name", "Environment's application name").Required().Short('a').Envar("APP_NAME").String()
+	deleteEnvironmentNameArg            = deleteEnvironment.Flag("env-name", "Environment to delete").Required().Short('e').Envar("ENV_NAME").String()
+	deleteEnvironmentTierArg            = deleteEnvironment.Flag("tier", "Tier Name (worker | webserver)").Required().Short('t').Envar("ENV_TIER").String()
 
 	update                              = kingpin.Command("update", "Deploy EB")
 	updateEnvironment                   = update.Command("environment", "Envrionment")
-	updateEnvironmentApplicationNameArg = updateEnvironment.Flag("app-name", "The Application in which the environment lives under").Required().Short('a').String()
-	updateEnvironmentNameArg            = updateEnvironment.Flag("env-name", "Envionment name").Required().Short('e').String()
-	updateEnvironmentVersionArg         = updateEnvironment.Flag("version-label", "Version").Required().Short('l').String()
-	updateEnvironmentTierArg            = updateEnvironment.Flag("tier", "Environment Tier").Required().Short('t').String()
-	updateEnvironmentS3Arg              = updateEnvironment.Flag("bucket", "S3 Bucket Name + path").Short('b').String()
-	updateEnvironmentLocalFilePathArg   = updateEnvironment.Flag("local-file-prefix", "The directory (prefix) of the file to upload.").Short('d').String()
-	updateEnvironmentDescriptionArg     = updateEnvironment.Flag("desc", "Description of Version").String()
+	updateEnvironmentApplicationNameArg = updateEnvironment.Flag("app-name", "The Application in which the environment lives under").Required().Short('a').Envar("APP_NAME").String()
+	updateEnvironmentNameArg            = updateEnvironment.Flag("env-name", "Envionment name").Required().Short('e').Envar("ENV_NAME").String()
+	updateEnvironmentVersionArg         = updateEnvironment.Flag("version-label", "Version").Short('l').Envar("ENV_VERSION_LABEL").String()
+	updateEnvironmentTierArg            = updateEnvironment.Flag("tier", "Environment Tier").Required().Short('t').Envar("ENV_TIER").String()
+	updateEnvironmentS3Arg              = updateEnvironment.Flag("bucket", "S3 Bucket Name + path").Short('b').Envar("ENV_S3_BUCKET_LOCATION").String()
+	updateEnvironmentLocalFilePathArg   = updateEnvironment.Flag("local-file-prefix", "The directory (prefix) of the file to upload.").Short('d').Envar("ENV_LOCAL_FILE_PREFIX").String()
+	updateEnvironmentDescriptionArg     = updateEnvironment.Flag("desc", "Description of Version").Envar("ENV_DESCRIPTION").String()
+	updateEnvironmentConfigArg          = updateEnvironment.Flag("config", "Config yml file").Short('c').Envar("ENV_CONFIG_PATH").String()
 
 	rollback = kingpin.Command("rollback", "Rollback EB")
 
 	// General Flags
-	awsRegion          = kingpin.Flag("region", "AWS Region").Short('r').String()
-	awsAccessKeyID     = kingpin.Flag("access-key-id", "AWS Access Key ID").Short('k').String()
-	awsSecretAccessKey = kingpin.Flag("secret-access-key", "AWS Secret Access Key").Short('s').String()
-	awsProfile         = kingpin.Flag("profile", "Aws Profile").Short('p').String()
-	awsCredPath        = kingpin.Flag("cred-path", "Aws Cred Path").String()
+	awsRegion          = kingpin.Flag("region", "AWS Region").Short('r').Envar("AWS_REGION").String()
+	awsAccessKeyID     = kingpin.Flag("access-key-id", "AWS Access Key ID").Short('k').Envar("AWS_ACCESS_KEY_ID").String()
+	awsSecretAccessKey = kingpin.Flag("secret-access-key", "AWS Secret Access Key").Short('s').Envar("AWS_SECRET_ACCESS_KEY").String()
+	awsProfile         = kingpin.Flag("profile", "Aws Profile").Short('p').Envar("AWS_PROFILE").String()
+	awsCredPath        = kingpin.Flag("cred-path", "Aws Cred Path").Envar("AWS_CRED_PATH").String()
 
-	verbose = kingpin.Flag("verbose", "Verbose mode").Short('v').Bool()
+	verbose = kingpin.Flag("verbose", "Verbose mode").Short('v').Envar("VERBOSE_MODE").Bool()
 
 	//Command Regex Section
 	createRegex   = regexp.MustCompile(`^create`)
@@ -77,7 +78,7 @@ var (
 	rollbackRegex = regexp.MustCompile(`^rollback`)
 
 	//Global Vars
-	cliVersion = "0.0.1"
+	cliVersion = "0.0.2"
 )
 
 // listFunction operation for Elastic Beanstalk Environment
@@ -140,6 +141,7 @@ func createFunction(createMethod string, awsConfig config.Config) {
 		additionalConfigOptions["AppName"] = *createEnvironmentApplicationNameArg
 		additionalConfigOptions["AppBucket"] = bucketInfo[0]
 		additionalConfigOptions["AppKey"] = bucketInfo[1] + "/" + *createEnvironmentVersionArg + ".zip"
+		additionalConfigOptions["VersionLabel"] = *createEnvironmentVersionArg
 		additionalConfigOptions["Tier"] = *createEnvironmentTierArg
 
 		configOptions := utils.GetConfig(*createEnvironmentConfigArg)
@@ -186,19 +188,40 @@ func updateFunction(updateMethod string, awsConfig config.Config) {
 
 	bucketInfo := s3Service.ParseS3Bucket(*updateEnvironmentS3Arg)
 
-	svc := elasticbeanstalk.New(
-		*updateEnvironmentApplicationNameArg, *updateEnvironmentNameArg,
-		*updateEnvironmentVersionArg, *updateEnvironmentDescriptionArg,
-		bucketInfo, "versions/"+*updateEnvironmentVersionArg+".zip",
-		*updateEnvironmentTierArg, awsConfig,
-	)
-
 	switch updateMethod {
 	case "update environment":
-		if *updateEnvironmentS3Arg != "" {
+		environment := utils.GetDefault(*updateEnvironmentNameArg, *updateEnvironmentApplicationNameArg)
+		asset, err := Asset(fmt.Sprintf("resources/cloudformation/templates/%s_v1.json", *updateEnvironmentTierArg))
+
+		if err != nil {
+			log.Fatalf("Asset not found: %s", err)
+			return
+		}
+
+		if *updateEnvironmentVersionArg != "" {
 			s3Service.UploadSingleFile(*updateEnvironmentS3Arg, *updateEnvironmentLocalFilePathArg+"/"+*updateEnvironmentVersionArg+".zip", *updateEnvironmentVersionArg)
 		}
-		svc.UpdateEnvironment()
+
+		configOptions := make(map[string]string)
+		configOptions["EnvName"] = environment
+		configOptions["AppName"] = *updateEnvironmentApplicationNameArg
+		if len(bucketInfo) > 0 {
+			configOptions["AppBucket"] = bucketInfo[0]
+			configOptions["AppKey"] = bucketInfo[1] + "/" + *updateEnvironmentVersionArg + ".zip"
+		}
+		configOptions["VersionLabel"] = *updateEnvironmentVersionArg
+		configOptions["Tier"] = *updateEnvironmentTierArg
+
+		usePreviousTemplate := true
+
+		if *updateEnvironmentConfigArg != "" {
+			configOptions = utils.CombineConfigOptions(utils.GetConfig(*updateEnvironmentConfigArg), configOptions)
+			usePreviousTemplate = false
+		}
+
+		cfServcie := cloudformation.New(awsConfig)
+
+		cfServcie.UpdateStack(configOptions, asset, usePreviousTemplate)
 	}
 }
 
