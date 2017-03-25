@@ -15,7 +15,7 @@ build:
 	@echo Compiling resources/.. for version $(VERSION)
 	@go-bindata resources/...
 	@echo Building $(BINARY_NAME) version $(VERSION)
-	@go build -a -tags netgo -ldflags '-w' -o ./bin/$(BINARY_NAME)-$(VERSION)
+	@env CGO_ENABLED=0 GOOS=linux go build -a -tags netgo -ldflags '-w' -o ./bin/$(BINARY_NAME)-$(VERSION)
 	@cp ./bin/$(BINARY_NAME)-$(VERSION) ./bin/$(BINARY_NAME)
 
 compress:
