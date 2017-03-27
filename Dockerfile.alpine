@@ -1,3 +1,5 @@
 FROM alpine:latest
 
-COPY ./bin/go-deploy /usr/local/bin/
+COPY ./bin/go-deploy /bin/
+
+RUN chmod +x /bin/go-deploy
