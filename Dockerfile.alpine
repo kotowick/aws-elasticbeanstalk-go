@@ -1,5 +1,9 @@
 FROM alpine:latest
 
-COPY ./bin/go-deploy /bin/
+COPY ./bin/go-deploy /usr/local/bin/go-deploy/
 
-RUN chmod +x /bin/go-deploy
+ENV PATH="$PATH:/usr/local/bin/go-deploy"
+
+RUN chmod +x /usr/local/bin/go-deploy/go-deploy
+
+VOLUME ["/usr/local/bin/go-deploy/"]
