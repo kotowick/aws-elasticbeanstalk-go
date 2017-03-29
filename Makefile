@@ -18,6 +18,13 @@ build:
 	@env CGO_ENABLED=0 GOOS=linux go build -a -tags netgo -ldflags '-w' -o ./bin/$(BINARY_NAME)-$(VERSION)
 	@cp ./bin/$(BINARY_NAME)-$(VERSION) ./bin/$(BINARY_NAME)
 
+build-osx:
+	@echo Compiling resources/.. for version $(VERSION)
+	@go-bindata resources/...
+	@echo Building $(BINARY_NAME) version $(VERSION)
+	@env go build -a -tags netgo -ldflags '-w' -o ./bin/$(BINARY_NAME)-osx-$(VERSION)
+	@cp ./bin/$(BINARY_NAME)-osx-$(VERSION) ./bin/$(BINARY_NAME)-osx
+
 compress:
 	@tar czf /tmp/$(BINARY_NAME)-$(VERSION).tar.gz ./versions
 

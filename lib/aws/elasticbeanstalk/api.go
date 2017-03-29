@@ -136,21 +136,58 @@ func (c *ElasticBeanstalk) CreateApplicationVersion() {
 // See the AWS API reference guide for AWS Elastic Beanstalk's
 // API operation DescribeApplications for usage and error information.
 // Please also see https://docs.aws.amazon.com/goto/WebAPI/elasticbeanstalk-2010-12-01/DescribeApplications
-func (c *ElasticBeanstalk) ListApplications(verbose bool) {
+func (c *ElasticBeanstalk) ListApplications(verbose, outputResults bool) (*elasticbeanstalk.DescribeApplicationsOutput, error) {
 	resp, err := c.Service.DescribeApplications(&elasticbeanstalk.DescribeApplicationsInput{})
 
 	if err != nil {
 		fmt.Println(err.Error())
-		return
+		return &elasticbeanstalk.DescribeApplicationsOutput{}, err
 	}
 
 	if verbose {
 		fmt.Println(resp)
-	} else {
+	} else if outputResults {
 		for j := range resp.Applications {
-			fmt.Printf("%s", *resp.Applications[j].ApplicationName)
+			fmt.Printf("%s\n", *resp.Applications[j].ApplicationName)
 		}
 	}
+	return resp, nil
+}
+
+// ApplicationExists API operation
+//
+func (c *ElasticBeanstalk) ApplicationExists() bool {
+	app, err := c.ListApplications(false, false)
+
+	if err != nil {
+		return false
+	}
+
+	for j := range app.Applications {
+		if *app.Applications[j].ApplicationName == c.ApplicationName {
+			return true
+		}
+	}
+
+	return false
+}
+
+// EnvironmentExists API operation
+//
+func (c *ElasticBeanstalk) EnvironmentExists() bool {
+	env, err := c.ListEnvironments(false, false, c.ApplicationName, c.EnvironmentName)
+
+	if err != nil {
+		return false
+	}
+
+	for j := range env.Environments {
+		if *env.Environments[j].EnvironmentName == c.EnvironmentName {
+			return true
+		}
+	}
+
+	return false
 }
 
 // ListEnvironments API operation for AWS Elastic Beanstalk.
@@ -160,7 +197,7 @@ func (c *ElasticBeanstalk) ListApplications(verbose bool) {
 // See the AWS API reference guide for AWS Elastic Beanstalk's
 // API operation DescribeEnvironments for usage and error information.
 // Please also see https://docs.aws.amazon.com/goto/WebAPI/elasticbeanstalk-2010-12-01/DescribeEnvironments
-func (c *ElasticBeanstalk) ListEnvironments(verbose bool, applicationName string, environmentName string) {
+func (c *ElasticBeanstalk) ListEnvironments(verbose, outputResults bool, applicationName string, environmentName string) (*elasticbeanstalk.EnvironmentDescriptionsMessage, error) {
 	params := &elasticbeanstalk.DescribeEnvironmentsInput{}
 
 	if applicationName != "" {
@@ -175,16 +212,18 @@ func (c *ElasticBeanstalk) ListEnvironments(verbose bool, applicationName string
 
 	if err != nil {
 		fmt.Println(err.Error())
-		return
+		return &elasticbeanstalk.EnvironmentDescriptionsMessage{}, err
 	}
 
 	if verbose {
 		fmt.Println(resp)
-	} else {
+	} else if outputResults {
 		for j := range resp.Environments {
 			fmt.Printf("%s", *resp.Environments[j].EnvironmentName)
 		}
 	}
+
+	return resp, nil
 }
 
 // DeleteApplication API operation for AWS Elastic Beanstalk.

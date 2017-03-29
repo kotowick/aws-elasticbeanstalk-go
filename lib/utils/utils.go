@@ -134,3 +134,27 @@ func ShellOut(message string, p ShellOutParams) {
 		Keys(objects, p.Keys)
 	}
 }
+
+// VerifyParamatersWithOr returns true if any of the paramaters in args[] are empty.
+// This checks to see if required variables are set or not
+func VerifyParamatersWithOr(args map[string]string) bool {
+	for k, v := range args {
+		if v == "" {
+			log.Fatal(fmt.Sprintf("%s is not set.", k))
+			return false
+		}
+	}
+	return true
+}
+
+// VerifyParamatersWithAnd returns true if any of the paramaters in args[] are not empty.
+// This checks to see if required variables are set or not
+func VerifyParamatersWithAnd(args map[string]string) bool {
+	for _, v := range args {
+		if v != "" {
+			return true
+		}
+	}
+	log.Fatal("VerifyParamatersWithOr failed: all of the paramaters returns empty")
+	return false
+}
