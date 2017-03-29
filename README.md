@@ -105,5 +105,6 @@ Four things are required:
 The startup command for this container is `go-deploy upsert`, which creates resoursed if they don't exist, and updates them if they do exist.
 
 **Run the container**
+
 `docker run -v /local/path/to/versions_folder:/tmp -e VOLUME_PATH="/tmp" -it kotowick/go-deploy:latest`
 
