@@ -1,5 +1,7 @@
 FROM alpine:latest
 
+RUN apk --update add ca-certificates
+
 COPY ./bin/go-deploy /usr/local/bin/go-deploy/
 
 COPY ./run.sh /

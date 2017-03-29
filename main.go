@@ -107,7 +107,7 @@ func listFunction(listMethod string, awsConfig config.Config, ebService elasticb
 	case "list applications":
 		ebService.ListApplications(*verbose, true)
 	case "list environments":
-		if utils.VerifyParamatersWithOr(map[string]string{"Application Name": *environmentApplicationNameArg}) {
+		if utils.VerifyParamatersWithAnd(true, map[string]string{"Application Name": *environmentApplicationNameArg}) {
 			ebService.ListEnvironments(*verbose, true, *environmentApplicationNameArg, *environmentNameArg)
 		}
 	default:
@@ -127,7 +127,7 @@ func listFunction(listMethod string, awsConfig config.Config, ebService elasticb
 func createFunction(createMethod string, awsConfig config.Config, ebService elasticbeanstalk.ElasticBeanstalk, s3Service s3.S3) {
 	bucketInfo := s3Service.ParseS3Bucket(*environmentS3Arg)
 
-	if !utils.VerifyParamatersWithOr(map[string]string{"Application Name": *environmentApplicationNameArg}) {
+	if !utils.VerifyParamatersWithAnd(true, map[string]string{"Application Name": *environmentApplicationNameArg}) {
 		return
 	}
 
@@ -135,7 +135,7 @@ func createFunction(createMethod string, awsConfig config.Config, ebService elas
 	case "create application":
 		ebService.CreateApplication(*environmentApplicationNameArg)
 	case "create environment":
-		if !utils.VerifyParamatersWithOr(map[string]string{"Local File Path": *environmentLocalFilePathArg, "Environment Name": *environmentNameArg, "Tier": *environmentTierArg, "Configuration File": *environmentConfigArg, "S3 Bucket/path": *environmentS3Arg, "Version": *environmentVersionArg}) {
+		if !utils.VerifyParamatersWithAnd(true, map[string]string{"Local File Path": *environmentLocalFilePathArg, "Environment Name": *environmentNameArg, "Tier": *environmentTierArg, "Configuration File": *environmentConfigArg, "S3 Bucket/path": *environmentS3Arg, "Version": *environmentVersionArg}) {
 			return
 		}
 
@@ -176,11 +176,11 @@ func createFunction(createMethod string, awsConfig config.Config, ebService elas
 func deleteFunction(deleteMethod string, awsConfig config.Config, ebService elasticbeanstalk.ElasticBeanstalk) {
 	switch deleteMethod {
 	case "delete application":
-		if utils.VerifyParamatersWithOr(map[string]string{"Application Name": *environmentApplicationNameArg}) {
+		if utils.VerifyParamatersWithAnd(true, map[string]string{"Application Name": *environmentApplicationNameArg}) {
 			ebService.DeleteApplication(*environmentApplicationNameArg)
 		}
 	case "delete environment":
-		if utils.VerifyParamatersWithOr(map[string]string{"Application Name": *environmentApplicationNameArg, "Environment Name": *environmentNameArg, "Tier": *environmentTierArg}) {
+		if utils.VerifyParamatersWithAnd(true, map[string]string{"Application Name": *environmentApplicationNameArg, "Environment Name": *environmentNameArg, "Tier": *environmentTierArg}) {
 			cfServcie := cloudformation.New(awsConfig)
 			cfServcie.DeleteStack(fmt.Sprintf("%s-%s-%s", *environmentApplicationNameArg, *environmentNameArg, *environmentTierArg))
 		}
@@ -203,11 +203,11 @@ func updateFunction(updateMethod string, awsConfig config.Config, ebService elas
 
 	switch updateMethod {
 	case "update environment":
-		if !utils.VerifyParamatersWithOr(map[string]string{"Application Name": *environmentApplicationNameArg, "Environment Name": *environmentNameArg, "Tier": *environmentTierArg}) {
+		if !utils.VerifyParamatersWithAnd(true, map[string]string{"Application Name": *environmentApplicationNameArg, "Environment Name": *environmentNameArg, "Tier": *environmentTierArg}) {
 			return
 		}
 
-		if !utils.VerifyParamatersWithAnd(map[string]string{"Configuration File": *environmentConfigArg, "Version": *environmentVersionArg}) {
+		if !utils.VerifyParamatersWithOr(false, map[string]string{"Configuration File": *environmentConfigArg, "Version": *environmentVersionArg}) {
 			return
 		}
 
@@ -248,14 +248,14 @@ func updateFunction(updateMethod string, awsConfig config.Config, ebService elas
 
 func upsertFunction(updateMethod string, awsConfig config.Config, ebService elasticbeanstalk.ElasticBeanstalk, s3Service s3.S3) {
 	if !ebService.ApplicationExists() {
-		fmt.Println("App DOES NOT exists")
+		fmt.Println("App DOES NOT exist.. creating")
 		createFunction("create application", awsConfig, ebService, s3Service)
 	}
 
 	if ebService.EnvironmentExists() {
 		updateFunction("update environment", awsConfig, ebService, s3Service)
 	} else {
-		fmt.Println("Env DOES NOT exists")
+		fmt.Println("Env DOES NOT exist..creating")
 		createFunction("create environment", awsConfig, ebService, s3Service)
 	}
 }
@@ -266,11 +266,11 @@ func main() {
 
 	parsedArg := kingpin.Parse()
 
-	if !utils.VerifyParamatersWithOr(map[string]string{"AWS Region": *awsRegion}) {
+	if !utils.VerifyParamatersWithAnd(true, map[string]string{"AWS Region": *awsRegion}) {
 		return
 	}
 
-	if !utils.VerifyParamatersWithOr(map[string]string{"Aws Profile": *awsProfile}) && !utils.VerifyParamatersWithAnd(map[string]string{"AWS Access Key ID": *awsAccessKeyID, "Aws Secret Access Key": *awsSecretAccessKey}) {
+	if !utils.VerifyParamatersWithOr(false, map[string]string{"Aws Profile": *awsProfile}) && !utils.VerifyParamatersWithAnd(false, map[string]string{"AWS Access Key ID": *awsAccessKeyID, "Aws Secret Access Key": *awsSecretAccessKey}) {
 		return
 	}
 
