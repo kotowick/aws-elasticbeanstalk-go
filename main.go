@@ -52,7 +52,7 @@ var (
 	// Global Vars
 	//--
 	//
-	cliVersion = "1.0.3"
+	cliVersion = "1.0.4"
 
 	// --
 	// Top Level Commands
@@ -140,7 +140,7 @@ func createFunction(createMethod string, awsConfig config.Config, ebService elas
 		}
 
 		environment := utils.GetDefault(*environmentNameArg, *environmentApplicationNameArg)
-		asset, err := Asset(fmt.Sprintf("resources/cloudformation/templates/%s_v1.json", *environmentTierArg))
+		asset, err := Asset(fmt.Sprintf("resources/cloudformation/templates/%s_v2.json", *environmentTierArg))
 
 		if err != nil {
 			log.Fatalf("Asset not found: %s", err)
@@ -212,7 +212,7 @@ func updateFunction(updateMethod string, awsConfig config.Config, ebService elas
 		}
 
 		environment := utils.GetDefault(*environmentNameArg, *environmentApplicationNameArg)
-		asset, err := Asset(fmt.Sprintf("resources/cloudformation/templates/%s_v1.json", *environmentTierArg))
+		asset, err := Asset(fmt.Sprintf("resources/cloudformation/templates/%s_v2.json", *environmentTierArg))
 
 		if err != nil {
 			log.Fatalf("Asset not found: %s", err)
@@ -223,20 +223,23 @@ func updateFunction(updateMethod string, awsConfig config.Config, ebService elas
 			s3Service.UploadSingleFile(*environmentS3Arg, *environmentLocalFilePathArg+"/"+*environmentVersionArg+".zip", *environmentVersionArg)
 		}
 
-		configOptions := make(map[string]string)
-		configOptions["EnvName"] = environment
-		configOptions["AppName"] = *environmentApplicationNameArg
+		additionalConfigOptions := make(map[string]string)
+		additionalConfigOptions["EnvName"] = environment
+		additionalConfigOptions["AppName"] = *environmentApplicationNameArg
 		if len(bucketInfo) > 0 {
-			configOptions["AppBucket"] = bucketInfo[0]
-			configOptions["AppKey"] = bucketInfo[1] + "/" + *environmentVersionArg + ".zip"
+			additionalConfigOptions["AppBucket"] = bucketInfo[0]
+			additionalConfigOptions["AppKey"] = bucketInfo[1] + "/" + *environmentVersionArg + ".zip"
 		}
-		configOptions["VersionLabel"] = *environmentVersionArg
-		configOptions["Tier"] = *environmentTierArg
+		additionalConfigOptions["VersionLabel"] = *environmentVersionArg
+		additionalConfigOptions["Tier"] = *environmentTierArg
 
 		usePreviousTemplate := true
 
+		configOptions := utils.GetConfig(*environmentConfigArg)
+		configOptions = utils.CombineConfigOptions(configOptions, additionalConfigOptions)
+
 		if *environmentConfigArg != "" {
-			configOptions = utils.CombineConfigOptions(utils.GetConfig(*environmentConfigArg), configOptions)
+			fmt.Printf("Config file is present: %s", *environmentConfigArg)
 			usePreviousTemplate = false
 		}
 
@@ -253,6 +256,7 @@ func upsertFunction(updateMethod string, awsConfig config.Config, ebService elas
 	}
 
 	if ebService.EnvironmentExists() {
+		fmt.Println("Updating existing environment...")
 		updateFunction("update environment", awsConfig, ebService, s3Service)
 	} else {
 		fmt.Println("Env DOES NOT exist..creating")

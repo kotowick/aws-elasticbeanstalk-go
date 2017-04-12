@@ -48,10 +48,22 @@
 			"Type" : "String",
 			"Default" : ""
 		},
-		"loadbalancerManagedSecurityGroup" : {
+		"loadbalancerDefaultListenerEnabled" : {
+			"Description" : "Will ELB cross availability zones. True/False Boolean.",
+			"Type" : "String",
+			"Default" : "true",
+			"AllowedValues" : [ "true", "false" ]
+		},
+		"loadbalancerSecureListenerCertificateId" : {
 			"Description" : "Will ELB cross availability zones. True/False Boolean.",
 			"Type" : "String",
 			"Default" : ""
+		},
+		"loadbalancerSecureListenerEnabled" : {
+			"Description" : "Will ELB cross availability zones. True/False Boolean.",
+			"Type" : "String",
+			"Default" : "false",
+			"AllowedValues" : [ "true", "false" ]
 		},
 		"environmentServiceRole" : {
 			"Description" : "IAM role used by Elastic Beanstalk to manage services.",
@@ -346,7 +358,15 @@
 							{"Namespace" : "aws:elasticbeanstalk:environment", "OptionName" : "EnvironmentType", "Value" : { "Ref" : "environmentType" }},
 							{"Namespace" : "aws:elb:loadbalancer", "OptionName" : "CrossZone", "Value" : { "Ref" : "loadbalancerCrossZone" }},
 							{"Namespace" : "aws:elb:loadbalancer", "OptionName" : "SecurityGroups", "Value" : { "Ref" : "loadbalancerSecurityGroups" }},
-							{"Namespace" : "aws:elb:loadbalancer", "OptionName" : "ManagedSecurityGroup", "Value" : { "Ref" : "loadbalancerManagedSecurityGroup" }}
+							{"Namespace" : "aws:elb:listener:80", "OptionName" : "ListenerProtocol", "Value" : "HTTP" },
+							{"Namespace" : "aws:elb:listener:80", "OptionName" : "InstancePort", "Value" : "80" },
+							{"Namespace" : "aws:elb:listener:80", "OptionName" : "InstanceProtocol", "Value" : "HTTP" },
+							{"Namespace" : "aws:elb:listener:80", "OptionName" : "ListenerEnabled", "Value" : { "Ref" : "loadbalancerDefaultListenerEnabled" }},
+							{"Namespace" : "aws:elb:listener:443", "OptionName" : "ListenerProtocol", "Value" : "HTTPS" },
+							{"Namespace" : "aws:elb:listener:443", "OptionName" : "InstancePort", "Value" : "80" },
+							{"Namespace" : "aws:elb:listener:443", "OptionName" : "InstanceProtocol", "Value" : "HTTP" },
+							{"Namespace" : "aws:elb:listener:443", "OptionName" : "SSLCertificateId", "Value" : { "Ref" : "loadbalancerSecureListenerCertificateId" }},
+							{"Namespace" : "aws:elb:listener:443", "OptionName" : "ListenerEnabled", "Value" : { "Ref" : "loadbalancerSecureListenerEnabled" }}
 						]
    			}
 		}

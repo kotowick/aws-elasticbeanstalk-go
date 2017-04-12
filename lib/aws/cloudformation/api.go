@@ -119,13 +119,15 @@ func (c *CloudFormation) UpdateStack(paramaters map[string]string, template []by
 	fmt.Printf("%s", cfParameters)
 
 	params := &cloudformation.UpdateStackInput{
-		StackName:  aws.String(fmt.Sprintf("%s-%s-%s", paramaters["AppName"], paramaters["EnvName"], paramaters["Tier"])), // Required
+		StackName:  aws.String(fmt.Sprintf("%s-%s", paramaters["AppName"], paramaters["EnvName"])), // Required
 		Parameters: cfParameters,
 	}
 
 	if usePreviousTemplate {
+		fmt.Println("Using previous template")
 		params.UsePreviousTemplate = aws.Bool(usePreviousTemplate)
 	} else {
+		fmt.Println("Using template file")
 		params.TemplateBody = aws.String(fmt.Sprintf("%s", template))
 	}
 
@@ -158,7 +160,7 @@ func (c *CloudFormation) CreateStack(paramaters map[string]string, template []by
 	fmt.Printf("%s", cfParameters)
 
 	params := &cloudformation.CreateStackInput{
-		StackName:       aws.String(fmt.Sprintf("%s-%s-%s", paramaters["AppName"], paramaters["EnvName"], paramaters["Tier"])), // Required
+		StackName:       aws.String(fmt.Sprintf("%s-%s", paramaters["AppName"], paramaters["EnvName"])), // Required
 		DisableRollback: aws.Bool(false),
 		//OnFailure: aws.String("OnFailure"),
 		Parameters:       cfParameters,

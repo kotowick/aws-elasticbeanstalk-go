@@ -10,4 +10,5 @@ ENV PATH="$PATH:/usr/local/bin/go-deploy"
 
 RUN chmod +x /usr/local/bin/go-deploy/go-deploy
 
+VOLUME /usr/local/bin/go-deploy
 CMD ["/bin/sh", "/run.sh"]
